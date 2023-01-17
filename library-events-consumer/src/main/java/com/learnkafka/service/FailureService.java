@@ -1,0 +1,27 @@
+package com.learnkafka.service;
+
+import com.learnkafka.entity.FailureRecord;
+import com.learnkafka.jpa.FailureRecordRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.stereotype.Service;
+
+@Service
+public class FailureService {
+
+    private FailureRecordRepository failureRecordRepository;
+
+    public FailureService(FailureRecordRepository failureRecordRepository){
+        this.failureRecordRepository = failureRecordRepository;
+    }
+
+
+    public void saveFailedRecord(ConsumerRecord<Integer, String> record, Exception e, String status) {
+
+        var failureRecord = new FailureRecord(null, record.topic(),
+                record.key(), record.value(), record.partition(),
+                record.offset(), e.getCause().getMessage(), status);
+
+        failureRecordRepository.save(failureRecord);
+    }
+}
