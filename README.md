@@ -4,10 +4,10 @@
 ![eda-diagram](documentation/eda.png)
 
 ## Microservices
-- ### library-events-producer
+### library-events-producer
 `Spring Boot` application that gets invoked as soon as a book is scanned from the API and published the record to the topic `library-events`. 
 
-- ### library-events-consumer
+### library-events-consumer
 `Spring Boot` application that reads new records from the topic `library-events` and saves the payload to the in-memory h2 database.
 
 ## Prerequisites
@@ -18,6 +18,7 @@
 
 ## Configuration
 - Start zookeeper and multiple `Kafka` brokers.
+
     ```
     ./zookeeper-server-start.sh ../config/zookeeper.properties
     ```
@@ -31,11 +32,15 @@
     ```
     ./kafka-server-start.sh ../config/server.properties
     ```
+
 - Create a topic `library-events`.
+
     ```
     ./kafka-topics.sh --create --topic library-events --replication-factor 3 --partitions 3 --bootstrap-server localhost:9092
     ```
+
 - Build the two projects and launch applications.
+
     ```
     ./gradlew build
     ```
@@ -49,13 +54,16 @@
 ## Run the project
 Open a new terminal to add or update library events
 - Add a new book record.
+
     ```
     curl -i \
     -d '{"libraryEventId":111,"book":{"bookId":456,"bookName":"Kafka Using Spring Boot","bookAuthor":"YZ"}}' \
     -H "Content-Type: application/json" \
     -X POST http://localhost:8080/v1/libraryevent
     ```
+
 - Update a book. 
+
     ```
     curl -i \
     -d '{"libraryEventId":111,"book":{"bookId":456,"bookName":"Kafka Using Spring Boot v3.0.0+","bookAuthor":"YZ"}}' \
